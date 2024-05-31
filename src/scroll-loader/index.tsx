@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 interface LoadScrollProps {
-    height?: number;
+    height?: string;
     url: string;
     take?: number;
     children?: (item: any) => React.ReactNode;
@@ -47,7 +47,7 @@ interface LoadScrollProps {
  * 
  */
 function ScrollLoader({
-    height = 200,
+    height = "200px",
     url,
     take = 10,
     children,

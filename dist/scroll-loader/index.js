@@ -83,7 +83,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
  */
 function ScrollLoader(_a) {
     var _this = this;
-    var _b = _a.height, height = _b === void 0 ? 200 : _b, url = _a.url, _c = _a.take, take = _c === void 0 ? 10 : _c, children = _a.children, onEnd = _a.onEnd, renderLoading = _a.renderLoading;
+    var _b = _a.height, height = _b === void 0 ? "200px" : _b, url = _a.url, _c = _a.take, take = _c === void 0 ? 10 : _c, children = _a.children, onEnd = _a.onEnd, renderLoading = _a.renderLoading;
     var _d = useState([]), data = _d[0], setData = _d[1];
     var _e = useState(1), page = _e[0], setPage = _e[1];
     var _f = useState(true), hasMore = _f[0], setHasMore = _f[1];

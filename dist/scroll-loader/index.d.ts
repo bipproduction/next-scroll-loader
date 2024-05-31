@@ -1,6 +1,6 @@
 import React from "react";
 interface LoadScrollProps {
-    height?: number;
+    height?: string;
     url: string;
     take?: number;
     children?: (item: any) => React.ReactNode;
