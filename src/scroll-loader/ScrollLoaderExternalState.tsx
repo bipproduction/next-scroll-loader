@@ -2,60 +2,77 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 
 interface LoadScrollProps {
     height?: string;
-    url?: string;
+    url: string;
     take?: number;
     children?: (item: any) => React.ReactNode;
     onEnd?: () => void;
     renderLoading?: () => React.ReactNode;
+    data: any[];
+    setData: React.Dispatch<React.SetStateAction<any[]>>;
+    page: number;
+    setPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 /**
  * ### Scroll Loader
  * **DESCRIPTION:**  
- * this component is used to load more data on scroll
+ * This component is used to load more data on scroll.
  * 
  * ### PARAMS:
- * - height : number , height of the container
- * - url :  string , url to fetch data
- * - take : number , number of items to fetch
- * - children : (item: any) => React.ReactNode , function to render each item
+ * - **height** : `string` (optional), height of the container. Default is `"200px"`.
+ * - **url** : `string`, URL to fetch data.
+ * - **take** : `number` (optional), number of items to fetch per request. Default is `10`.
+ * - **children** : `(item: any) => React.ReactNode`, function to render each item.
+ * - **onEnd** : `() => void` (optional), callback function called when the scroll reaches the end.
+ * - **renderLoading** : `() => React.ReactNode` (optional), function to render a custom loading indicator.
+ * - **data** : `any[]`, array of data items to display.
+ * - **setData** : `React.Dispatch<React.SetStateAction<any[]>>`, function to update the data array.
+ * - **page** : `number`, current page number.
+ * - **setPage** : `React.Dispatch<React.SetStateAction<number>>`, function to update the page number.
  * 
  * ### EXAMPLE CLIENT SIDE
  * 
  * ```tsx
- * <ScrollLoader url="/api/test-scroll" take={30}>
- *   {(data) => <Box>
- *     {data.name}
- *   </Box>}
- * </ScrollLoader>
+ * const [data, setData] = useState([]);
+ * const [page, setPage] = useState(1);
+ * 
+ * <ScrollLoaderExternalState url="/api/test-scroll" take={30} data={data} setData={setData} page={page} setPage={setPage}>
+ *   {(item) => (
+ *     <Box key={item.id}>
+ *       {item.name}
+ *     </Box>
+ *   )}
+ * </ScrollLoaderExternalState>
  * ```
  * 
  * ### EXAMPLE SERVER SIDE
  * 
  * ```ts
  * export async function GET(req: Request) {
- *     const take = +(new URL(req.url).searchParams.get('take') || 10)
- *     const skip = +(new URL(req.url).searchParams.get('skip') || 0)
+ *     const take = +(new URL(req.url).searchParams.get('take') || 10);
+ *     const skip = +(new URL(req.url).searchParams.get('skip') || 0);
  *     
  *     const data = await prisma.testScroll.findMany({
  *         take,
  *         skip
- *     })
- *     return Response.json(data)
+ *     });
+ *     return Response.json(data);
  * }
  * ```
  * 
  */
-function ScrollLoader({
+export default function ScrollLoaderExternalState({
     height = "200px",
     url,
     take = 10,
     children,
     onEnd,
-    renderLoading
+    renderLoading,
+    data,
+    setData,
+    page,
+    setPage
 }: LoadScrollProps) {
-    const [data, setData] = useState<any[]>([]);
-    const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -72,7 +89,7 @@ function ScrollLoader({
             if (result.length === 0) {
                 setHasMore(false);
             } else {
-                setData(prevData => {
+                setData((prevData: any) => {
                     const newData = [...prevData, ...result];
                     // Ensure unique items (if items have a unique 'id' property)
                     return Array.from(new Set(newData.map(item => item.id)))
@@ -86,7 +103,7 @@ function ScrollLoader({
         } finally {
             setIsLoading(false);
         }
-    }, [page, url, take, hasMore, isLoading]);
+    }, [page, url, take, hasMore, isLoading, setData, setPage]);
 
     const handleScroll = useCallback(() => {
         const scrollElement = scrollRef.current;
@@ -132,7 +149,7 @@ function ScrollLoader({
         };
 
         loadInitialData();
-    }, [url, take]);
+    }, [url, take, setData, setPage]);
 
     return (
         <div ref={scrollRef} style={{ overflowY: 'auto', height }}>
@@ -146,5 +163,3 @@ function ScrollLoader({
         </div>
     );
 }
-
-export default ScrollLoader;
