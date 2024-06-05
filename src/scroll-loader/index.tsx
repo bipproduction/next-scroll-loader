@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 
 interface LoadScrollProps {
     height?: string;
-    url: string;
+    url?: string;
     take?: number;
     children?: (item: any) => React.ReactNode;
     onEnd?: () => void;
@@ -141,8 +141,8 @@ function ScrollLoader({
                     {children && children(item)}
                 </div>
             ))}
-            {isLoading && !renderLoading && <div>Loading...</div>} 
-            {isLoading && renderLoading && renderLoading()} 
+            {isLoading && !renderLoading && <div>Loading...</div>}
+            {isLoading && renderLoading && renderLoading()}
         </div>
     );
 }
